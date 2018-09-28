@@ -71,9 +71,9 @@ public class Shop {
 
     public String buyProductById(String id) {
         try {
-            Product product = findProductById(id);
-            if (product.isInStock()) {
-                product.setInStock(false);
+            Product fountProduct = findProductById(id);
+            if (fountProduct.isInStock()) {
+                fountProduct.setInStock(false);
                 return "Buy product: success!";
             } else {
                 return "Product out of stock";
@@ -85,14 +85,14 @@ public class Shop {
 
     public String buyProductByDescription(String description) {
         try {
-            ArrayList<Product> products = findProductsByDescription(description);
+            ArrayList<Product> foundProducts = findProductsByDescription(description);
 
-            if (products.size() > 1) {
+            if (foundProducts.size() > 1) {
                 return "We find several products for your request. Please refine request";
             }
 
-            if (products.get(0).isInStock()) {
-                products.get(0).setInStock(false);
+            if (foundProducts.get(0).isInStock()) {
+                foundProducts.get(0).setInStock(false);
                 return "Buy product: success!";
             } else {
                 return "Product out of stock";
@@ -117,5 +117,21 @@ public class Shop {
         addProduct("JustFoodForDogs Fresh-on-the-Go Chicken and White Rice Dog Food", "00000001", new Double("150"), new Double("5"));
         addProduct("Kiwi Kitchens Super Food Booster Fish Recipe for Cats & Dogs", "00000002", new Double("390"), new Double("13"));
         addProduct("Kiwi Kitchens Lamb Liver Freeze Dried Dog Treats", "00000003", new Double("600"), new Double("20"));
+    }
+
+    public static void main(String[] args) throws Exception{
+        Shop s = new Shop();
+
+        System.out.println(s.findProductsByDescription("kiwi"));
+        Product[] products1 = {new Product("test2", "00000008", null,(double)1),
+                new Product("test3", "0000010000", (double)135, null)};
+        for (Product p: products1){
+            s.addProduct(p);
+        }
+        System.out.println(s.toString());
+        System.out.println(s.findProductsByDescription("test"));
+        System.out.println(s.buyProductById("00000008"));
+        System.out.println(s.toString());
+        System.out.println(s.buyProductByDescription("test3"));
     }
 }

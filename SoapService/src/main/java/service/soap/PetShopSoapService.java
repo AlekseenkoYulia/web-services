@@ -55,7 +55,7 @@ public class PetShopSoapService implements PetShopInterface {
 
     @Override
     public String buyProductByDescription(String description) {
-        String status = petShop.buyProductById(description);
+        String status = petShop.buyProductByDescription(description);
         return status;
     }
 }
