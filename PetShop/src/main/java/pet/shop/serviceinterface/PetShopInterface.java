@@ -1,6 +1,8 @@
 package pet.shop.serviceinterface;
 
 import pet.shop.Product;
+import pet.shop.exceptions.CannotAddProductException;
+import pet.shop.exceptions.CannotBuyProductException;
 import pet.shop.exceptions.ProductNotFoundException;
 
 import javax.jws.WebMethod;
@@ -19,13 +21,13 @@ public interface PetShopInterface {
     Product findProductById(String id)throws ProductNotFoundException;
 
     @WebMethod
-    String addProducts(Product[] products);
+    void addProducts(Product[] products)throws CannotAddProductException;
 
     @WebMethod
-    String buyProductById(String id);
+    void buyProductById(String id) throws CannotBuyProductException, ProductNotFoundException;
 
     @WebMethod
-    String buyProductByDescription(String description);
+    void buyProductByDescription(String description) throws CannotBuyProductException, ProductNotFoundException;
 
     @WebMethod
     public String printShop();

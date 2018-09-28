@@ -1,6 +1,8 @@
 package service.soap;
 
 import pet.shop.*;
+import pet.shop.exceptions.CannotAddProductException;
+import pet.shop.exceptions.CannotBuyProductException;
 import pet.shop.exceptions.ProductNotFoundException;
 import pet.shop.serviceinterface.PetShopInterface;
 
@@ -34,28 +36,17 @@ public class PetShopSoapService implements PetShopInterface {
     }
 
     @Override
-    public String addProducts(Product[] products) {
-        StringBuilder responseMsg = new StringBuilder();
-        for (Product p : products) {
-            String status = petShop.addProduct(p);
-            if (status.equals("Add product: success!")) {
-                responseMsg.append("Add product: " + p + " - Success!" + "\n");
-            } else {
-                responseMsg.append("Can't add product: " + p + " - " + status + "\n");
-            }
-        }
-        return responseMsg.append("Operation complete.").toString();
+    public void addProducts(Product[] products) throws CannotAddProductException{
+        petShop.addProducts(products);
     }
 
     @Override
-    public String buyProductById(String id) {
-        String status = petShop.buyProductById(id);
-        return status;
+    public void buyProductById(String id) throws CannotBuyProductException, ProductNotFoundException {
+        petShop.buyProductById(id);
     }
 
     @Override
-    public String buyProductByDescription(String description) {
-        String status = petShop.buyProductByDescription(description);
-        return status;
+    public void buyProductByDescription(String description) throws CannotBuyProductException, ProductNotFoundException {
+        petShop.buyProductByDescription(description);
     }
 }

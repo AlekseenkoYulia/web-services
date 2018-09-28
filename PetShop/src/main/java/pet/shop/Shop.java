@@ -1,11 +1,19 @@
 package pet.shop;
 
+import pet.shop.exceptions.CannotAddProductException;
+import pet.shop.exceptions.CannotBuyProductException;
 import pet.shop.exceptions.ProductNotFoundException;
 
 import java.util.ArrayList;
 
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Shop {
     ArrayList<Product> products;
+
+    public ArrayList<Product> getProducts() {
+        return products;
+    }
 
     public Shop() {
         products = new ArrayList<Product>();
@@ -23,7 +31,7 @@ public class Shop {
         if (foundProducts.size() > 0) {
             return foundProducts;
         }
-        throw new ProductNotFoundException();
+        throw new ProductNotFoundException("Product not found");
     }
 
     public Product findProductById(String id) throws ProductNotFoundException {
@@ -32,12 +40,12 @@ public class Shop {
                 return p;
             }
         }
-        throw new ProductNotFoundException();
+        throw new ProductNotFoundException("Product not found");
     }
 
-    public String addProduct(String description, String id, Double rub, Double usd) {
+    public void addProduct(String description, String id, Double rub, Double usd) throws CannotAddProductException {
         if (rub == null && usd == null) {
-            return "You should refine price";
+            throw new CannotAddProductException("You should refine price");
         }
         if (rub == null) {
             rub = usd * 30;
@@ -48,90 +56,93 @@ public class Shop {
         }
 
         if (usd * 30 != rub) {
-            return "Cannot add product. RUB price is not equals to USD price";
+            throw new CannotAddProductException("Cannot add product. RUB price is not equals to USD price");
         }
         if (id.length() < 8 || id.length() > 10) {
-            return "Cannot add product. Product ID must be 8-10 digits";
+            throw new CannotAddProductException("Cannot add product. Product ID must be 8-10 digits");
         }
 
         for (Product p : products) {
             if (p.id.equals(id) || p.description.toLowerCase().equals(description.toLowerCase())) {
-                return "Product is already in PetShop";
+                throw new CannotAddProductException("Product is already in PetShop");
             }
         }
 
         Product product = new Product(description, id, rub, usd);
         products.add(product);
-        return "Add product: success!";
     }
 
-    public String addProduct(Product p) {
-        return addProduct(p.getDescription(), p.getId(), p.getPriceRUB(), p.getPriceUSD());
+    public void addProduct(Product p) throws CannotAddProductException{
+        addProduct(p.getDescription(), p.getId(), p.getPriceRUB(), p.getPriceUSD());
+    }
+    public void addProducts(Product[] products) throws CannotAddProductException{
+        ArrayList<Product> addedProducts = new ArrayList<>();
+        try {
+            for (Product p : products) {
+                addProduct(p);
+                addedProducts.add(p);
+            }
+        } catch (CannotAddProductException ex) {
+            for (Product p : addedProducts) {
+                deleteProduct(p);
+            }
+            throw ex;
+        }
     }
 
-    public String buyProductById(String id) {
+    public void buyProductById(String id) throws CannotBuyProductException, ProductNotFoundException{
         try {
             Product fountProduct = findProductById(id);
             if (fountProduct.isInStock()) {
                 fountProduct.setInStock(false);
-                return "Buy product: success!";
             } else {
-                return "Product out of stock";
+                throw new CannotBuyProductException("Product out of stock");
             }
         } catch (ProductNotFoundException e) {
-            return "Product not found";
+            throw e;
         }
     }
 
-    public String buyProductByDescription(String description) {
+    public void buyProductByDescription(String description) throws CannotBuyProductException, ProductNotFoundException{
         try {
             ArrayList<Product> foundProducts = findProductsByDescription(description);
 
             if (foundProducts.size() > 1) {
-                return "We find several products for your request. Please refine request";
+                throw new CannotBuyProductException("We find several products for your request. Please refine request");
             }
 
             if (foundProducts.get(0).isInStock()) {
                 foundProducts.get(0).setInStock(false);
-                return "Buy product: success!";
             } else {
-                return "Product out of stock";
+                throw new CannotBuyProductException("Product out of stock");
             }
         } catch (ProductNotFoundException e) {
-            return "Product not found";
+            throw e;
+        }
+    }
+
+    public void deleteProduct(Product product){
+        for (Product p: products){
+            if(p.equals(product)){
+                products.remove(p);
+            }
         }
     }
 
     @Override
     public String toString() {
-        String result = "";
-
-        for (Product p : products)
-            result += p + "\n";
-        return result;
+        return products.toString();
     }
 
 
-    public void initProducts() {
-        addProduct("JustFoodForDogs Fresh-on-the-Go Beef and Russet Potato Dog Food", "00000000", new Double("165"), new Double("5.5"));
-        addProduct("JustFoodForDogs Fresh-on-the-Go Chicken and White Rice Dog Food", "00000001", new Double("150"), new Double("5"));
-        addProduct("Kiwi Kitchens Super Food Booster Fish Recipe for Cats & Dogs", "00000002", new Double("390"), new Double("13"));
-        addProduct("Kiwi Kitchens Lamb Liver Freeze Dried Dog Treats", "00000003", new Double("600"), new Double("20"));
-    }
-
-    public static void main(String[] args) throws Exception{
-        Shop s = new Shop();
-
-        System.out.println(s.findProductsByDescription("kiwi"));
-        Product[] products1 = {new Product("test2", "00000008", null,(double)1),
-                new Product("test3", "0000010000", (double)135, null)};
-        for (Product p: products1){
-            s.addProduct(p);
+    public void initProducts(){
+        try {
+            addProduct("JustFoodForDogs Fresh-on-the-Go Beef and Russet Potato Dog Food", "00000000", new Double("165"), new Double("5.5"));
+            addProduct("JustFoodForDogs Fresh-on-the-Go Chicken and White Rice Dog Food", "00000001", new Double("150"), new Double("5"));
+            addProduct("Kiwi Kitchens Super Food Booster Fish Recipe for Cats & Dogs", "00000002", new Double("390"), new Double("13"));
+            addProduct("Kiwi Kitchens Lamb Liver Freeze Dried Dog Treats", "00000003", new Double("600"), new Double("20"));
+        } catch (CannotAddProductException ex) {
+            ex.printStackTrace();
         }
-        System.out.println(s.toString());
-        System.out.println(s.findProductsByDescription("test"));
-        System.out.println(s.buyProductById("00000008"));
-        System.out.println(s.toString());
-        System.out.println(s.buyProductByDescription("test3"));
     }
 }
