@@ -1,8 +1,9 @@
 package service.rest;
 
-import pet.shop.Exceptions.ProductNotFoundException;
+import pet.shop.exceptions.ProductNotFoundException;
 import pet.shop.Product;
 import pet.shop.Shop;
+
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;

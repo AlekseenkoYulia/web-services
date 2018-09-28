@@ -1,4 +1,4 @@
-package pet.shop.Exceptions;
+package pet.shop.exceptions;
 
 public class ProductNotFoundException extends Exception {
 }

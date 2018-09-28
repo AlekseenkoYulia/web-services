@@ -1,14 +1,14 @@
 package service.soap;
 
-import pet.shop.Exceptions.ProductNotFoundException;
-import pet.shop.Product;
-import pet.shop.Shop;
+import pet.shop.*;
+import pet.shop.exceptions.ProductNotFoundException;
+import pet.shop.serviceinterface.PetShopInterface;
 
 import javax.jws.WebService;
 import java.util.ArrayList;
 
-@WebService(endpointInterface = "service.soap.PetShopSoapServiceInterface")
-public class PetShopSoapService implements PetShopSoapServiceInterface {
+@WebService(endpointInterface = "pet.shop.serviceinterface.PetShopInterface")
+public class PetShopSoapService implements PetShopInterface {
     static Shop petShop = new Shop();
 
     @Override

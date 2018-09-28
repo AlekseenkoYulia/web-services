@@ -1,15 +1,14 @@
-package service.soap;
+package pet.shop.serviceinterface;
 
-import pet.shop.Exceptions.ProductNotFoundException;
 import pet.shop.Product;
-import pet.shop.Shop;
+import pet.shop.exceptions.ProductNotFoundException;
 
 import javax.jws.WebMethod;
 import javax.jws.WebService;
 import java.util.ArrayList;
 
 @WebService
-public interface PetShopSoapServiceInterface {
+public interface PetShopInterface {
     @WebMethod
     String welcome();
 
@@ -31,3 +30,7 @@ public interface PetShopSoapServiceInterface {
     @WebMethod
     public String printShop();
 }
+
+
+
+

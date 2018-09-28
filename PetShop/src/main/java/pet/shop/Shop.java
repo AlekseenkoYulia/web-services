@@ -1,6 +1,6 @@
 package pet.shop;
 
-import pet.shop.Exceptions.ProductNotFoundException;
+import pet.shop.exceptions.ProductNotFoundException;
 
 import java.util.ArrayList;
 
