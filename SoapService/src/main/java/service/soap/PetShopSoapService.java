@@ -22,23 +22,15 @@ public class PetShopSoapService implements PetShopSoapServiceInterface {
     }
 
     @Override
-    public String findProductsByDescription(String description) {
-        try {
-            ArrayList<Product> products = petShop.findProductsByDescription(description);
-            return products.toString();
-        } catch (ProductNotFoundException e) {
-            return "Products not found";
-        }
+    public ArrayList<Product> findProductsByDescription(String description) throws ProductNotFoundException {
+        ArrayList<Product> products = petShop.findProductsByDescription(description);
+        return products;
     }
 
     @Override
-    public String findProductById(String id) {
-        try {
-            Product product = petShop.findProductById(id);
-            return product.toString();
-        } catch (ProductNotFoundException e) {
-            return "Product not found";
-        }
+    public Product findProductById(String id) throws ProductNotFoundException {
+        Product product = petShop.findProductById(id);
+        return product;
     }
 
     @Override
