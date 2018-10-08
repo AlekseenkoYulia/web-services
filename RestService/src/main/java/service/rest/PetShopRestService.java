@@ -59,6 +59,21 @@ public class PetShopRestService {
         }
         return Response.status(200).entity(responseMsg.append("Operation complete.").toString()).build();
     }
+    @POST
+    @Path("/addOne")
+    @Consumes(MediaType.TEXT_PLAIN)
+    public Response addProducts(Product product) {
+        StringBuilder responseMsg = new StringBuilder();
+
+            String status = petShop.addProduct(product);
+            if (status.equals("Add product: success!")) {
+                responseMsg.append("Add product: " + product + " - Success!" + "\n");
+            } else {
+                responseMsg.append("Can't add product: " + product + " - " + status + "\n");
+            }
+
+        return Response.status(200).entity(responseMsg.append("Operation complete.").toString()).build();
+    }
 
     @GET
     @Path("/buy/{id: \\d+}")
