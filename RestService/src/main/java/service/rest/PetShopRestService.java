@@ -61,8 +61,8 @@ public class PetShopRestService {
     }
     @POST
     @Path("/addOne")
-    @Consumes(MediaType.TEXT_PLAIN)
-    public Response addProducts(Product product) {
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response addProduct(Product product) {
         StringBuilder responseMsg = new StringBuilder();
 
             String status = petShop.addProduct(product);
